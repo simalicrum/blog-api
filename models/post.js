@@ -8,6 +8,8 @@ var PostSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: "User"},
   timestamp: { type: Date },
   content: { type: String },
+  published: { type: Boolean },
+  comments: [{type: Schema.Types.ObjectId, ref: "Comment"}],
 });
 
 PostSchema.virtual("timestamp_formatted").get(function () {
