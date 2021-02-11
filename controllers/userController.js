@@ -18,8 +18,12 @@ exports.user_login_post =
 
 exports.user_logout_get = function (req, res) {
   req.logout();
-  res.redirect("/");
+  res.redirect("/posts");
 };
+
+exports.user_list = function (res, req, next) {
+  res.send("NOT IMPLEMENTED: User list GET");
+}
 
 exports.user_signup_get = function (req, res, next) {
   res.render("signup_form", { title: "Create an account" });
@@ -84,9 +88,9 @@ exports.user_update_post = function (req, res, next) {
 };
 
 exports.user_delete_get = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: User update GET");
+  res.send("NOT IMPLEMENTED: User delete GET");
 };
 
-exports.user_delete_post = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: User update POST");
+exports.user_delete = function (req, res, next) {
+  res.send("NOT IMPLEMENTED: User DELETE");
 };

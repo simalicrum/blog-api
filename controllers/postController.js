@@ -36,12 +36,12 @@ exports.post_list = function (req, res, next) {
 };
 
 exports.post_create_get = function (req, res, next) {
-  res.render("post_form", { title: "Post Page" });
+  res.render("post_form", { title: "Add a blog post" });
 };
 
 exports.post_create_post = [
   body("title", "Title cannot be blank").trim().isLength({ min: 1 }).escape(),
-  body("post", "Post cannot be blank")
+  body("post", "Blog post cannot be blank")
     .trim()
     .isLength({ min: 1 })
     .escape(),
@@ -58,7 +58,7 @@ exports.post_create_post = [
     if (!errors.isEmpty()) {
       res.render("post_form", {
         post: post,
-        title: "Add a post",
+        title: "Add a blog post",
         errors: errors.array(),
       });
       return;
@@ -74,18 +74,18 @@ exports.post_create_post = [
 ];
 
 exports.post_update_get = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: Post update GET");
+  res.send("NOT IMPLEMENTED: Post update GET for id:", req.params.postId);
 };
 
 exports.post_update_post = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: Post update POST");
+  res.send("NOT IMPLEMENTED: Post update POST for id:", req.params.postId);
 };
 
 exports.post_delete_get = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: Post delete GET");
+  res.send("NOT IMPLEMENTED: Post delete GET for id:", req.params.postId);
 };
 
-exports.post_delete_post = function (req, res, next) {
+exports.post_delete = function (req, res, next) {
   Post.findByIdAndRemove(req.body.postid, function deleteItem(err) {
     if (err) {
       return next(err);

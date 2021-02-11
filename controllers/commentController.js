@@ -39,7 +39,7 @@ exports.comment_create_get = function (req, res, next) {
   res.render("comment_form", { title: "Comment Page" });
 };
 
-exports.comment_create_comment = [
+exports.comment_create_post = [
   body("title", "Title cannot be blank").trim().isLength({ min: 1 }).escape(),
   body("comment", "Comment cannot be blank")
     .trim()
@@ -77,7 +77,7 @@ exports.comment_update_get = function (req, res, next) {
   res.send("NOT IMPLEMENTED: Comment update GET");
 };
 
-exports.comment_update_comment = function (req, res, next) {
+exports.comment_update_put = function (req, res, next) {
   res.send("NOT IMPLEMENTED: Comment update POST");
 };
 
@@ -85,8 +85,8 @@ exports.comment_delete_get = function (req, res, next) {
   res.send("NOT IMPLEMENTED: Comment delete GET");
 };
 
-exports.comment_delete_comment = function (req, res, next) {
-  Comment.findByIdAndRemove(req.body.commentid, function deleteItem(err) {
+exports.comment_delete = function (req, res, next) {
+  Comment.findByIdAndRemove(req.params.commentId, function deleteItem(err) {
     if (err) {
       return next(err);
     }

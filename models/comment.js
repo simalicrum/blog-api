@@ -7,6 +7,7 @@ var CommentSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: "User"},
   timestamp: { type: Date },
   content: { type: String },
+  post: { type: Schema.Types.ObjectId, ref: "Post"},
 });
 
 CommentSchema.virtual("timestamp_formatted").get(function () {
