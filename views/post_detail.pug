@@ -1,0 +1,14 @@
+extends layout
+
+include ./header.pug
+include ./post.pug
+
+block content
+  div.container.max-w-screen-md.mx-auto
+    +header
+    +post(post)
+    h2.text-lg.font-semibold Comments
+    if comments
+      p Hello, world
+    else
+      p No comments

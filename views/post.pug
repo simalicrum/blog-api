@@ -1,0 +1,7 @@
+mixin post(postarg)
+  div.space-y-2.p-8
+      h2.text-lg.font-semibold
+        a(href="/posts/" + postarg._id) #{postarg.title}
+      p.text-sm.text-gray-500 #{postarg.content}
+      p.text-sm.text-gray-800 #{postarg.author.first_name} #{postarg.author.last_name} 
+        span.text-gray-500 • #{postarg.timestamp_formatted}

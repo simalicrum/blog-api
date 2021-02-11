@@ -5,7 +5,14 @@ const Post = require("../models/post");
 const User = require("../models/user");
 
 exports.post_detail = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: Post detail GET");
+  Post.findById(req.params.postId)
+  .populate("author")
+  .exec(function (err, post) {
+    if (err) {
+      return next(err);
+    }
+    res.render("post_detail", { post: post, user: req.user });
+  });
 };
 
 exports.post_list = function (req, res, next) {
