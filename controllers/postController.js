@@ -15,23 +15,7 @@ exports.post_list = function (req, res, next) {
       if (err) {
         return next(err);
       }
-      if (req.user) {
-        switch (req.user.status) {
-          case "reader":
-            res.render("reader_posts", {
-              post_list: post_list,
-              user: req.user,
-            });
-            break;
-          case "author":
-            res.render("author_posts", { post_list: post_list, user: req.user });
-            break;
-          default:
-            res.render("user_posts", { post_list: post_list, user: req.user });
-        }
-      } else {
-        res.render("loggedout_posts", { post_list: post_list });
-      }
+      res.render("post_list", { post_list: post_list, user: req.user });
     });
 };
 
