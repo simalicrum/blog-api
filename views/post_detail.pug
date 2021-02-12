@@ -2,13 +2,18 @@ extends layout
 
 include ./header.pug
 include ./post.pug
+include ./comment.pug
 
 block content
   div.container.max-w-screen-md.mx-auto
     +header
     +post(post)
-    h2.text-lg.font-semibold Comments
-    if comments
-      p Hello, world
-    else
-      p No comments
+    div.space-y-2.p-8
+      h2.text-lg.font-semibold(name="comments") Comments
+      if post.comments.length > 0
+        ul
+          if post.comments
+            each comment in post.comments
+              li
+                +comment(comment)
+      a(href="/posts/" + post._id + "/comments/new") Leave a comment

@@ -1,6 +1,7 @@
 extends layout
 
 include ./header.pug
+include ./post.pug
 
 block content
   div.container.max-w-screen-md.mx-auto
@@ -12,16 +13,8 @@ block content
             path(fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd")
           span.ml-2 Add a blog post
     div
-      ul.p-8
+      ul
         if post_list
           each post in post_list
-            li.space-y-2
-              h2.text-lg.font-semibold
-                a(href="/posts/" + post._id) #{post.title}
-              p.text-sm.text-gray-500 #{post.content}
-              p.text-sm.text-gray-800 #{post.author.first_name} #{post.author.last_name} 
-                span.text-gray-500 • #{post.timestamp_formatted} • 
-                if comments
-                  a.text-gray-500(href="#") #{comments.length + 1} comments
-                else
-                  a.text-gray-500(href="#") No comments
+            li
+              +post(post, true)

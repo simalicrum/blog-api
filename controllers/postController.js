@@ -6,7 +6,13 @@ const User = require("../models/user");
 
 exports.post_detail = function (req, res, next) {
   Post.findById(req.params.postId)
+  .populate("comments")
   .populate("author")
+  .populate({path: "comments",
+    populate: {
+      path: "author"
+    }
+  })
   .exec(function (err, post) {
     if (err) {
       return next(err);
@@ -17,6 +23,7 @@ exports.post_detail = function (req, res, next) {
 
 exports.post_list = function (req, res, next) {
   Post.find()
+    .populate("comments")
     .populate("author")
     .exec(function (err, post_list) {
       if (err) {

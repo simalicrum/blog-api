@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 
 const Comment = require("../models/comment");
 const User = require("../models/user");
+const Post = require("../models/post");
 
 exports.comment_detail = function (req, res, next) {
   res.send("NOT IMPLEMENTED: Comment detail GET");
@@ -36,11 +37,11 @@ exports.comment_list = function (req, res, next) {
 };
 
 exports.comment_create_get = function (req, res, next) {
-  res.render("comment_form", { title: "Comment Page" });
+  console.log("req.params.postId: ", req.params.postId );
+  res.render("comment_form", { title: "Leave a comment" });
 };
 
 exports.comment_create_post = [
-  body("title", "Title cannot be blank").trim().isLength({ min: 1 }).escape(),
   body("comment", "Comment cannot be blank")
     .trim()
     .isLength({ min: 1 })
@@ -49,7 +50,6 @@ exports.comment_create_post = [
     const errors = validationResult(req);
     console.log("errors: ", errors);
     const comment = new Comment({
-      title: req.body.title,
       author: req.user._id,
       timestamp: new Date(),
       content: req.body.comment,
@@ -63,10 +63,12 @@ exports.comment_create_post = [
       });
       return;
     } else {
+      console.log("comment: ", comment);
       comment.save(function (err) {
         if (err) {
           return next(err);
         }
+        Post.findByIdAndUpdate(req.params.postId, { $addToSet: {comments: [comment._id]}}).exec();
         res.redirect("/");
       });
     }
