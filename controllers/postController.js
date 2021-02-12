@@ -2,6 +2,7 @@ const async = require("async");
 const { body, validationResult } = require("express-validator");
 
 const Post = require("../models/post");
+const user = require("../models/user");
 const User = require("../models/user");
 
 exports.post_detail = function (req, res, next) {
@@ -17,10 +18,6 @@ exports.post_detail = function (req, res, next) {
     if (err) {
       return next(err);
     }
-    if (req.user) {
-      console.log("req.user._id: ", req.user._id);
-    }
-    console.log("post.author._id: ", post.author._id);
     res.render("post_detail", { post: post, user: req.user });
   });
 };
@@ -120,14 +117,17 @@ exports.post_update_post = [
 ];
 
 exports.post_delete_get = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: Post delete GET for id:", req.params.postId);
+  
+  console.log("req.user: ", req.user);
+  res.render("post_delete", {title: "This will permanently remove this blog post. Are you sure?", postId: req.params.postId });
 };
 
 exports.post_delete = function (req, res, next) {
+  console.log("req.body.postid: ", req.body.postid);
   Post.findByIdAndRemove(req.body.postid, function deleteItem(err) {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    res.redirect("/posts");
   });
 };
