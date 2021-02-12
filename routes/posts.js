@@ -19,7 +19,7 @@ router.put("/:postId/edit", post_controller.post_update_post);
 
 router.get("/:postId/delete", post_controller.post_delete_get);
 
-router.delete("/:postId/delete", post_controller.post_delete);
+router.post("/:postId/delete", post_controller.post_delete);
 
 //Post comment routes
 router.get('/:postId/comments', comment_controller.comment_list);
@@ -36,6 +36,6 @@ router.put("/:postId/comments/:commentId/edit", comment_controller.comment_updat
 
 router.get("/:postId/comments/:commentId/delete", comment_controller.comment_delete_get);
 
-router.delete("/:postId/comments/:commentId/delete", comment_controller.comment_delete);
+router.post("/:postId/comments/:commentId/delete", comment_controller.comment_delete);
 
 module.exports = router;
