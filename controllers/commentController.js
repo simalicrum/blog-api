@@ -38,7 +38,7 @@ exports.comment_list = function (req, res, next) {
 
 exports.comment_create_get = function (req, res, next) {
   console.log("req.params.postId: ", req.params.postId );
-  res.render("comment_form", { title: "Leave a comment" });
+  res.render("comment_form", { title: "Leave a comment", comment: { content: ""} });
 };
 
 exports.comment_create_post = [
@@ -76,7 +76,13 @@ exports.comment_create_post = [
 ];
 
 exports.comment_update_get = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: Comment update GET");
+  Comment.findById(req.params.commentId)
+  .exec((err, comment) => {
+    if (err) {
+      return next(err);
+    }
+    res.render("comment_form", {comment: comment, title: "Edit your comment", postId: req.params.postId});
+  });
 };
 
 exports.comment_update_put = function (req, res, next) {
