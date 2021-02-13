@@ -35,7 +35,9 @@ exports.post_list = function (req, res, next) {
 };
 
 exports.post_create_get = function (req, res, next) {
-  res.render("post_form", { title: "Add a blog post", post: {title: "", content: ""} });
+  if (req.user !== undefined) {
+    res.render("post_form", { title: "Add a blog post", post: {title: "", content: ""} });
+  }
 };
 
 exports.post_create_post = [
@@ -78,7 +80,13 @@ exports.post_update_get = function (req, res, next) {
       if (err) {
         return next(err);
       }
-      res.render("post_form", {post: post, title: "Edit your blog post"});
+      if (req.user !== undefined ) {
+        console.log("req.user._id: ", req.user._id);
+        console.log("post.author._id: ", post.author._id);
+        if (req.user._id.toString() === post.author._id.toString()) {
+          res.render("post_form", {post: post, title: "Edit your blog post"});
+        }
+      }
     });
 };
 

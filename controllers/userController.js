@@ -2,19 +2,47 @@ const async = require("async");
 const { body, validationResult } = require("express-validator");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
+const express = require('express');
 
 const User = require("../models/user");
 
 exports.user_login_get = function (req, res, next) {
   res.render("login_form", { title: "Login" });
 };
-
+/*
 exports.user_login_post =
   ("/login",
   passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/login",
   }));
+*/
+exports.user_login_post = (err, req, res, next) => {
+  console.log("This happened");
+  passport.authenticate('local', {session: false}, (err, user, info) => {
+    if (err || !user) {
+      return res.status(400).json({
+            message: 'Something is not right',
+            user : user
+        });
+    }
+    console.log("user: ", user);
+  req.login(user, {session: false}, (err) => {
+      if (err) {
+          res.send(err);
+      }
+
+  // generate a signed son web token with the contents of user object and return it in the response
+
+  const token = jwt.sign(user, 'your_jwt_secret');
+      return res.json({user, token});
+    });
+  })(req, res);
+}
+  
+
+
 
 exports.user_logout_get = function (req, res) {
   req.logout();
