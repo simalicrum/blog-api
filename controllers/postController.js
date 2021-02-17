@@ -23,6 +23,7 @@ exports.post_detail = function (req, res, next) {
 };
 
 exports.post_list = function (req, res, next) {
+  console.log("req.user: ", req.user);
   Post.find()
     .populate("comments")
     .populate("author")

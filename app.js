@@ -2,7 +2,6 @@ const dotenv = require("dotenv").config();
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
-const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 var cookieParser = require("cookie-parser");
@@ -10,6 +9,10 @@ var logger = require("morgan");
 const bcrypt = require("bcryptjs");
 var cors = require('cors');
 const User = require("./models/user");
+const jwt = require('jsonwebtoken');
+const passportJWT = require("passport-jwt");
+const JwtStrategy = passportJWT.Strategy;
+const ExtractJwt = passportJWT.ExtractJwt;
 
 
 //Set up mongoose connection
@@ -33,7 +36,7 @@ passport.use(
         if (res) {
           // passwords match! log user in
           console.log("login worked");
-          return done(null, user);
+          return done(null, user.toJSON());
         } else {
           // passwords do not match!
           return done(null, false, { message: "Incorrect password" });
@@ -43,20 +46,30 @@ passport.use(
   })
 );
 
-passport.serializeUser(function (user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function (id, done) {
-  User.findById(id, function (err, user) {
-    done(err, user);
+passport.use(
+  new JwtStrategy(
+    {
+      secretOrKey: process.env.SECRET,
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    }, function (payload, done) {
+    console.log("payload: ", payload);
+    User.findOne({username: payload.username}, function(err, user) {
+      if (err) {
+          return done(err, false);
+      }
+      if (user) {
+          return done(null, user);
+      } else {
+          return done(null, false);
+          // or you could create a new account
+      }
   });
-});
+  })
+);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
-//var commentsRouter = require('./routes/comments');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
 var signupRouter = require('./routes/signup');
@@ -67,16 +80,16 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(cors());
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({ secret: process.env.SECRET }));
-app.use(passport.initialize());
-app.use(passport.session());
 
+app.use(cors({
+  origin: ['https://localhost:3000']
+}));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -84,7 +97,6 @@ app.use('/posts', postsRouter);
 app.use('/signup', signupRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

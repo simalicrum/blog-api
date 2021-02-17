@@ -18,31 +18,30 @@ exports.user_login_post =
     failureRedirect: "/login",
   }));
 */
-exports.user_login_post = (err, req, res, next) => {
-  console.log("This happened");
-  passport.authenticate('local', {session: false}, (err, user, info) => {
-    if (err || !user) {
-      return res.status(400).json({
-            message: 'Something is not right',
-            user : user
-        });
+
+exports.user_login_post = (req, res, next) => {
+  passport.authenticate("local", { session: false }, (err, user, message) => {
+    if (err) {
+      return next(err);
     }
-    console.log("user: ", user);
-  req.login(user, {session: false}, (err) => {
-      if (err) {
-          res.send(err);
-      }
-
-  // generate a signed son web token with the contents of user object and return it in the response
-
-  const token = jwt.sign(user, 'your_jwt_secret');
-      return res.json({user, token});
+    if (!user) {
+      return res.status(400).send({ ...message });
+    }
+    req.login(user, { session: false }, (err) => {
+      if (err) return next(err);
+      const payload = {
+        username: user.username,
+        status: user.status
+      };
+      // generate a signed json web token with contents of user object and return in res
+      const token = jwt.sign(payload, process.env.SECRET, { expiresIn: "1d" });
+      console.log("token: ", token);
+      res.cookie("token", token, { httpOnly: true, secure: false, maxAge: 3600000 });
+      res.redirect("/");
+      res.send();
     });
-  })(req, res);
+  })(req, res, next);
 }
-  
-
-
 
 exports.user_logout_get = function (req, res) {
   req.logout();
