@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const express = require('express');
 
 const User = require("../models/user");
+const { deleteOne } = require("../models/user");
 
 exports.user_login_get = function (req, res, next) {
   res.render("login_form", { title: "Login" });
@@ -44,7 +45,7 @@ exports.user_login_post = (req, res, next) => {
 }
 
 exports.user_logout_get = function (req, res) {
-  req.logout();
+  res.clearCookie("token");
   res.redirect("/posts");
 };
 

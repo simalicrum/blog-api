@@ -2,7 +2,6 @@ const async = require("async");
 const { body, validationResult } = require("express-validator");
 
 const Post = require("../models/post");
-const user = require("../models/user");
 const User = require("../models/user");
 
 exports.post_detail = function (req, res, next) {
@@ -24,6 +23,7 @@ exports.post_detail = function (req, res, next) {
 
 exports.post_list = function (req, res, next) {
   console.log("req.user: ", req.user);
+  console.log("req.cookies:", req.cookies);
   Post.find()
     .populate("comments")
     .populate("author")
@@ -110,7 +110,7 @@ exports.post_update_post = [
     if (!errors.isEmpty()) {
       res.render("post_form", {
         post: post,
-        title: "Edit your blog post",
+        title: "Add a blog post",
         errors: errors.array(),
       });
       return;

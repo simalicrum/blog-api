@@ -36,7 +36,7 @@ passport.use(
         if (res) {
           // passwords match! log user in
           console.log("login worked");
-          return done(null, user.toJSON());
+          return done(null, user);
         } else {
           // passwords do not match!
           return done(null, false, { message: "Incorrect password" });
@@ -46,11 +46,19 @@ passport.use(
   })
 );
 
+var cookieExtractor = function(req) {
+  var token = null;
+  if (req && req.cookies) {
+      token = req.cookies['token'];
+  }
+  return token;
+};
+
 passport.use(
   new JwtStrategy(
     {
       secretOrKey: process.env.SECRET,
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: cookieExtractor,
     }, function (payload, done) {
     console.log("payload: ", payload);
     User.findOne({username: payload.username}, function(err, user) {
@@ -58,6 +66,7 @@ passport.use(
           return done(err, false);
       }
       if (user) {
+          console.log("We have a user: ", user);
           return done(null, user);
       } else {
           return done(null, false);
@@ -97,6 +106,7 @@ app.use('/posts', postsRouter);
 app.use('/signup', signupRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
