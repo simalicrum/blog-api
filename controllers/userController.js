@@ -8,7 +8,7 @@ const express = require('express');
 const User = require("../models/user");
 const { deleteOne } = require("../models/user");
 
-exports.user_login_get = function (req, res, next) {
+exports.user_login_get = (req, res, next) => {
   res.render("login_form", { title: "Login" });
 };
 
@@ -36,16 +36,16 @@ exports.user_login_post = (req, res, next) => {
   })(req, res, next);
 }
 
-exports.user_logout_get = function (req, res) {
+exports.user_logout_get = (req, res) => {
   res.clearCookie("token");
   res.redirect("/posts");
 };
 
-exports.user_list = function (res, req, next) {
+exports.user_list = (res, req, next) => {
   res.send("NOT IMPLEMENTED: User list GET");
 }
 
-exports.user_signup_get = function (req, res, next) {
+exports.user_signup_get = (req, res, next) => {
   res.render("signup_form", { title: "Create an account" });
 };
 
@@ -88,7 +88,7 @@ exports.user_signup_post = [
         });
         return;
       } else {
-        user.save(function (err) {
+        user.save( err => {
           if (err) {
             return next(err);
           }
@@ -99,18 +99,18 @@ exports.user_signup_post = [
   },
 ];
 
-exports.user_update_get = function (req, res, next) {
+exports.user_update_get = (req, res, next) => {
   res.send("NOT IMPLEMENTED: User update GET");
 };
 
-exports.user_update_post = function (req, res, next) {
+exports.user_update_post = (req, res, next) => {
   res.send("NOT IMPLEMENTED: User update POST");
 };
 
-exports.user_delete_get = function (req, res, next) {
+exports.user_delete_get = (req, res, next) => {
   res.send("NOT IMPLEMENTED: User delete GET");
 };
 
-exports.user_delete = function (req, res, next) {
+exports.user_delete = (req, res, next) => {
   res.send("NOT IMPLEMENTED: User DELETE");
 };

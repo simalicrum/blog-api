@@ -5,8 +5,8 @@ include ./post.pug
 include ./comment.pug
 
 block content
+  +header
   div.container.max-w-screen-md.mx-auto
-    +header
     +post(post)
     if user
       if post.author._id.toString() === user._id.toString()

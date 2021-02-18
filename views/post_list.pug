@@ -4,8 +4,8 @@ include ./header.pug
 include ./post.pug
 
 block content
+  +header
   div.container.max-w-screen-md.mx-auto
-    +header
     if user
       if user.status === "author"
         a.bg-blue-400.text-white.text-center.rounded-md.m-8.block.flex.items-center.justify-center(href="/posts/new" class="py-2.5")

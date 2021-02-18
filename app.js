@@ -24,8 +24,8 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // Login setup
 passport.use(
-  new LocalStrategy(function (username, password, done) {
-    User.findOne({ username: username }, function (err, user) {
+  new LocalStrategy((username, password, done) => {
+    User.findOne({ username: username }, (err, user) => {
       if (err) {
         return done(err);
       }
@@ -46,7 +46,7 @@ passport.use(
   })
 );
 
-var cookieExtractor = function(req) {
+var cookieExtractor = req => {
   var token = null;
   if (req && req.cookies) {
       token = req.cookies['token'];
@@ -61,7 +61,7 @@ passport.use(
       jwtFromRequest: cookieExtractor,
     }, function (payload, done) {
     console.log("payload: ", payload);
-    User.findOne({username: payload.username}, function(err, user) {
+    User.findOne({username: payload.username}, (err, user) => {
       if (err) {
           return done(err, false);
       }
@@ -109,12 +109,12 @@ app.use('/logout', logoutRouter);
 
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

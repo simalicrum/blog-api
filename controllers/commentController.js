@@ -5,38 +5,15 @@ const Comment = require("../models/comment");
 const User = require("../models/user");
 const Post = require("../models/post");
 
-exports.comment_detail = function (req, res, next) {
+exports.comment_detail = (req, res, next) => {
   res.send("NOT IMPLEMENTED: Comment detail GET");
 };
 
-exports.comment_list = function (req, res, next) {
-  Comment.find()
-    .populate("author")
-    .exec(function (err, comment_list) {
-      if (err) {
-        return next(err);
-      }
-      if (req.user) {
-        switch (req.user.status) {
-          case "member":
-            res.render("member", {
-              comment_list: comment_list,
-              user: req.user,
-            });
-            break;
-          case "admin":
-            res.render("admin", { comment_list: comment_list, user: req.user });
-            break;
-          default:
-            res.render("user", { comment_list: comment_list, user: req.user });
-        }
-      } else {
-        res.render("loggedout", { comment_list: comment_list });
-      }
-    });
+exports.comment_list =  (req, res, next) => {
+  res.send("NOT IMPLEMENTED: Comment list GET");
 };
 
-exports.comment_create_get = function (req, res, next) {
+exports.comment_create_get = (req, res, next) => {
   res.render("comment_form", { title: "Leave a comment", comment: { content: ""} });
 };
 
@@ -62,7 +39,7 @@ exports.comment_create_post = [
       });
       return;
     } else {
-      comment.save(function (err) {
+      comment.save(err => {
         if (err) {
           return next(err);
         }
@@ -73,7 +50,7 @@ exports.comment_create_post = [
   },
 ];
 
-exports.comment_update_get = function (req, res, next) {
+exports.comment_update_get = (req, res, next) => {
   Comment.findById(req.params.commentId)
   .exec((err, comment) => {
     if (err) {
@@ -109,7 +86,7 @@ exports.comment_update_post = [
         author: req.user._id,
         timestamp: new Date(),
         content: req.body.comment,
-      } ,function (err) {
+      } , err => {
         if (err) {
           return next(err);
         }
@@ -119,11 +96,11 @@ exports.comment_update_post = [
   },
 ];
 
-exports.comment_delete_get = function (req, res, next) {
+exports.comment_delete_get = (req, res, next) => {
   res.render("comment_delete", {title: "This will permanently remove this comment. Are you sure?", commentId: req.params.commentId, postID: req.params.postId });
 };
 
-exports.comment_delete = function (req, res, next) {
+exports.comment_delete = (req, res, next) => {
   Comment.findByIdAndRemove(req.params.commentId, function deleteItem(err) {
     if (err) {
       return next(err);

@@ -4,7 +4,7 @@ const { body, validationResult } = require("express-validator");
 const Post = require("../models/post");
 const User = require("../models/user");
 
-exports.post_detail = function (req, res, next) {
+exports.post_detail =  (req, res, next) => {
   Post.findById(req.params.postId)
   .populate("comments")
   .populate("author")
@@ -13,7 +13,7 @@ exports.post_detail = function (req, res, next) {
       path: "author"
     }
   })
-  .exec(function (err, post) {
+  .exec((err, post) => {
     if (err) {
       return next(err);
     }
@@ -21,13 +21,13 @@ exports.post_detail = function (req, res, next) {
   });
 };
 
-exports.post_list = function (req, res, next) {
+exports.post_list = (req, res, next) => {
   console.log("req.user: ", req.user);
   console.log("req.cookies:", req.cookies);
   Post.find()
     .populate("comments")
     .populate("author")
-    .exec(function (err, post_list) {
+    .exec( (err, post_list) => {
       if (err) {
         return next(err);
       }
@@ -35,7 +35,7 @@ exports.post_list = function (req, res, next) {
     });
 };
 
-exports.post_create_get = function (req, res, next) {
+exports.post_create_get =  (req, res, next) => {
   if (req.user !== undefined) {
     res.render("post_form", { title: "Add a blog post", post: {title: "", content: ""} });
   }
@@ -65,7 +65,7 @@ exports.post_create_post = [
       });
       return;
     } else {
-      post.save(function (err) {
+      post.save( err => {
         if (err) {
           return next(err);
         }
@@ -75,7 +75,7 @@ exports.post_create_post = [
   },
 ];
 
-exports.post_update_get = function (req, res, next) {
+exports.post_update_get = (req, res, next) => {
   Post.findById(req.params.postId)
     .exec((err, post) => {
       if (err) {
@@ -130,13 +130,13 @@ exports.post_update_post = [
   },
 ];
 
-exports.post_delete_get = function (req, res, next) {
+exports.post_delete_get = (req, res, next) => {
   
   console.log("req.user: ", req.user);
   res.render("post_delete", {title: "This will permanently remove this blog post. Are you sure?", postId: req.params.postId });
 };
 
-exports.post_delete = function (req, res, next) {
+exports.post_delete = (req, res, next) => {
   console.log("req.body.postid: ", req.body.postid);
   Post.findByIdAndRemove(req.body.postid, function deleteItem(err) {
     if (err) {
