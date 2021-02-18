@@ -28,7 +28,6 @@ exports.user_login_post = (req, res, next) => {
       };
       // generate a signed json web token with contents of user object and return in res
       const token = jwt.sign(payload, process.env.SECRET, { expiresIn: "1d" });
-      console.log("token: ", token);
       res.cookie("token", token, { httpOnly: true, secure: false, maxAge: 3600000 });
       res.redirect("/");
       res.send();

@@ -35,7 +35,6 @@ passport.use(
       bcrypt.compare(password, user.password, (err, res) => {
         if (res) {
           // passwords match! log user in
-          console.log("login worked");
           return done(null, user);
         } else {
           // passwords do not match!
@@ -60,13 +59,11 @@ passport.use(
       secretOrKey: process.env.SECRET,
       jwtFromRequest: cookieExtractor,
     }, function (payload, done) {
-    console.log("payload: ", payload);
     User.findOne({username: payload.username}, (err, user) => {
       if (err) {
           return done(err, false);
       }
       if (user) {
-          console.log("We have a user: ", user);
           return done(null, user);
       } else {
           return done(null, false);
