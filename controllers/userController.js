@@ -11,14 +11,6 @@ const { deleteOne } = require("../models/user");
 exports.user_login_get = function (req, res, next) {
   res.render("login_form", { title: "Login" });
 };
-/*
-exports.user_login_post =
-  ("/login",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-  }));
-*/
 
 exports.user_login_post = (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, user, message) => {

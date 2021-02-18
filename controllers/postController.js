@@ -115,11 +115,16 @@ exports.post_update_post = [
       });
       return;
     } else {
-      post.save(function (err) {
+      Post.findOneAndUpdate({_id: req.params.postId}, {
+        title: req.body.title,
+        author: req.user._id,
+        timestamp: new Date(),
+        content: req.body.post,
+      } ,function (err) {
         if (err) {
           return next(err);
         }
-        res.redirect("/");
+        res.redirect("/posts/" + req.params.postId);
       });
     }
   },

@@ -83,9 +83,41 @@ exports.comment_update_get = function (req, res, next) {
   });
 };
 
-exports.comment_update_post = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: Comment update POST");
-};
+exports.comment_update_post = [
+  body("comment", "Comment cannot be blank")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    console.log("errors: ", errors);
+    const comment = new Comment({
+      author: req.user._id,
+      timestamp: new Date(),
+      content: req.body.comment,
+      errors: errors,
+    });
+    if (!errors.isEmpty()) {
+      res.render("comment_form", {
+        comment: comment,
+        title: "Add a comment",
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      Comment.findOneAndUpdate({_id: req.params.commentId}, {
+        author: req.user._id,
+        timestamp: new Date(),
+        content: req.body.comment,
+      } ,function (err) {
+        if (err) {
+          return next(err);
+        }
+        res.redirect("/posts/" + req.params.postId + "#comments");
+      });
+    }
+  },
+];
 
 exports.comment_delete_get = function (req, res, next) {
   res.render("comment_delete", {title: "This will permanently remove this comment. Are you sure?", commentId: req.params.commentId, postID: req.params.postId });
