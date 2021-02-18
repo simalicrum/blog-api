@@ -58,7 +58,7 @@ passport.use(
     {
       secretOrKey: process.env.SECRET,
       jwtFromRequest: cookieExtractor,
-    }, function (payload, done) {
+    }, (payload, done) => {
     User.findOne({username: payload.username}, (err, user) => {
       if (err) {
           return done(err, false);
