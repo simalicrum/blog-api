@@ -27,6 +27,7 @@ exports.post_list = (req, res, next) => {
   Post.find()
     .populate("comments")
     .populate("author")
+    .sort("-timestamp")
     .exec( (err, post_list) => {
       if (err) {
         return next(err);
